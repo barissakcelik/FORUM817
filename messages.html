@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FORUM817 - Mesajlar</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <img src="https://placehold.co/200x50/f5a623/ffffff?text=FORUM817" alt="FORUM817 Logo" class="logo-image">
+        </a>
+        <div class="nav-links">
+          <a href="index.html" class="nav-link">Ana Sayfa</a>
+          <a href="search.html" class="nav-link">Ara</a>
+          <a href="members.html" class="nav-link">Üyeler</a>
+          <a href="rules.html" class="nav-link">Kurallar</a>
+        </div>
+        <div class="auth-buttons" id="auth-buttons">
+          <a href="login.html" class="btn btn-outline">Giriş Yap</a>
+          <a href="register.html" class="btn btn-primary">Kayıt Ol</a>
+        </div>
+        <div class="user-profile" id="user-profile" style="display: none;">
+          <div class="user-dropdown">
+            <button class="user-dropdown-btn" id="user-dropdown-toggle">
+              <div class="avatar user-avatar">U</div>
+              <span class="username" id="current-username">Kullanıcı</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="user-dropdown-content" id="user-dropdown-menu">
+              <a href="profile.html" class="dropdown-item">Profil</a>
+              <a href="settings.html" class="dropdown-item">Ayarlar</a>
+              <a href="messages.html" class="dropdown-item">Mesajlar</a>
+              <div id="admin-links" style="display: none;">
+                <div class="dropdown-divider"></div>
+                <a href="admin/index.html" class="dropdown-item">Admin Panel</a>
+              </div>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item" id="logout-btn">Çıkış Yap</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1 class="page-title">Mesajlar</h1>
+    
+    <div class="messages-container">
+      <div class="messages-sidebar">
+        <div class="messages-header">
+          <button id="new-message-btn" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Yeni Mesaj
+          </button>
+        </div>
+        
+        <div class="messages-search">
+          <input type="text" id="message-search" class="search-input" placeholder="Mesajlarda ara...">
+        </div>
+        
+        <div class="message-conversations" id="message-conversations">
+          <!-- Konuşmalar JavaScript ile yüklenecek -->
+          <div class="no-messages-placeholder" id="no-messages-placeholder">
+            <p>Henüz mesajınız bulunmuyor.</p>
+            <p>Yeni bir mesaj göndermek için "Yeni Mesaj" butonunu kullanabilirsiniz.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="messages-content">
+        <div class="messages-welcome" id="messages-welcome">
+          <div class="messages-welcome-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </div>
+          <h2>Mesajlarınıza Hoş Geldiniz</h2>
+          <p>Diğer üyelerle özel mesajlar gönderebilir ve alabilirsiniz.</p>
+          <p>Başlamak için sol taraftan bir konuşma seçin veya yeni bir mesaj oluşturun.</p>
+        </div>
+        
+        <div class="message-chat" id="message-chat" style="display: none;">
+          <div class="message-chat-header" id="message-chat-header">
+            <div class="message-recipient">
+              <div class="avatar recipient-avatar">U</div>
+              <div class="recipient-info">
+                <div class="recipient-name">Kullanıcı</div>
+                <div class="recipient-status">Çevrimiçi</div>
+              </div>
+            </div>
+            <div class="message-actions">
+              <button class="action-btn" id="delete-conversation-btn" title="Konuşmayı Sil">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <div class="message-chat-body" id="message-chat-body">
+            <!-- Mesajlar JavaScript ile yüklenecek -->
+          </div>
+          
+          <div class="message-chat-footer">
+            <form id="message-form" class="message-form">
+              <textarea id="message-input" class="message-input" placeholder="Mesajınızı yazın..." required></textarea>
+              <button type="submit" class="btn btn-primary send-message-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+                Gönder
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Yeni Mesaj Modal -->
+    <div id="new-message-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Yeni Mesaj</h2>
+          <button class="close-btn" id="close-new-message-modal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="new-message-form">
+            <div class="form-group">
+              <label for="recipient-username" class="form-label">Alıcı</label>
+              <select id="recipient-username" class="form-input" required>
+                <option value="">Alıcı seçin</option>
+                <!-- Kullanıcılar JavaScript ile yüklenecek -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="new-message-text" class="form-label">Mesaj</label>
+              <textarea id="new-message-text" class="form-textarea" placeholder="Mesajınızı yazın..." required></textarea>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-outline" id="cancel-new-message">İptal</button>
+              <button type="submit" class="btn btn-primary">Gönder</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-copyright">
+          <p>&copy; <span id="current-year">2023</span> FORUM817. Tüm hakları saklıdır.</p>
+        </div>
+        <div class="footer-links">
+          <a href="about.html" class="footer-link">Hakkımızda</a>
+          <a href="contact.html" class="footer-link">İletişim</a>
+          <a href="privacy.html" class="footer-link">Gizlilik</a>
+          <a href="terms.html" class="footer-link">Kullanım Şartları</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="forum-data.js"></script>
+  <script src="user-interface.js"></script>
+</body>
+</html>
+

@@ -81,6 +81,7 @@ function loadForumDataFromLocalStorage() {
       if (parsedData.topics) forumData.topics = parsedData.topics
       if (parsedData.replies) forumData.replies = parsedData.replies
       if (parsedData.members) forumData.members = parsedData.members
+      if (parsedData.messages) forumData.messages = parsedData.messages
 
       console.log("Forum verileri LocalStorage'dan yüklendi")
     } catch (error) {
@@ -204,6 +205,9 @@ function checkUserLoginStatus() {
 
       // Admin kontrolü
       checkAdminStatus()
+
+      // Kullanıcının son görülme zamanını güncelle
+      updateLastSeen()
     } catch (error) {
       console.error("Kullanıcı bilgileri alınamadı:", error)
       // Hata durumunda kullanıcı bilgilerini temizle
@@ -216,6 +220,22 @@ function checkUserLoginStatus() {
     isLoggedIn = false
     currentUser = null
     updateUserInterface()
+  }
+}
+
+// Kullanıcının son görülme zamanını güncelle
+function updateLastSeen() {
+  if (!isLoggedIn || !currentUser) return
+
+  // Kullanıcıyı bul
+  const userIndex = forumData.members.findIndex((m) => m.username === currentUser.username)
+  if (userIndex !== -1) {
+    // Son görülme zamanını güncelle
+    forumData.members[userIndex].lastSeen = "Şimdi"
+    forumData.members[userIndex].isOnline = true
+
+    // LocalStorage'a kaydet
+    localStorage.setItem("forumData", JSON.stringify(forumData))
   }
 }
 
@@ -270,6 +290,14 @@ function updateUserInterface() {
       replyForm.style.display = "block"
       loginToReply.style.display = "none"
     }
+
+    // Admin rozeti ekle
+    if (currentUser.role === "Yönetici" || currentUser.role === "Moderatör") {
+      const adminBadges = document.querySelectorAll(".admin-badge")
+      adminBadges.forEach((badge) => {
+        badge.style.display = "inline-block"
+      })
+    }
   } else {
     console.log("Giriş yapmamış kullanıcı için arayüz güncelleniyor")
 
@@ -295,6 +323,16 @@ function setupLogoutButton() {
   if (logoutBtn) {
     logoutBtn.addEventListener("click", (e) => {
       e.preventDefault()
+
+      // Kullanıcının çevrimiçi durumunu güncelle
+      if (currentUser) {
+        const userIndex = forumData.members.findIndex((m) => m.username === currentUser.username)
+        if (userIndex !== -1) {
+          forumData.members[userIndex].isOnline = false
+          forumData.members[userIndex].lastSeen = "Az önce"
+          localStorage.setItem("forumData", JSON.stringify(forumData))
+        }
+      }
 
       // Kullanıcı bilgilerini temizle
       localStorage.removeItem("forumUser")
@@ -436,6 +474,11 @@ function loadRecentTopics() {
         <div class="topic-author">
           <div class="avatar">${topic.author.charAt(0).toUpperCase()}</div>
           <span class="author-name">${topic.author}</span>
+          ${
+            topic.authorRole === "Yönetici" || topic.authorRole === "Moderatör"
+              ? `<span class="admin-badge">${topic.authorRole}</span>`
+              : ""
+          }
           <span class="topic-date">${topic.date}</span>
         </div>
         <div class="topic-stats">
@@ -579,6 +622,11 @@ function loadCategory() {
           <div class="topic-author">
             <div class="avatar">${topic.author.charAt(0).toUpperCase()}</div>
             <span class="author-name">${topic.author}</span>
+            ${
+              topic.authorRole === "Yönetici" || topic.authorRole === "Moderatör"
+                ? `<span class="admin-badge">${topic.authorRole}</span>`
+                : ""
+            }
             <span class="topic-date">${topic.date}</span>
           </div>
           <div class="topic-stats">
@@ -646,6 +694,16 @@ function loadTopic() {
   // Ana gönderiyi yükle
   const mainPostEl = document.getElementById("main-post")
   if (mainPostEl) {
+    // Resim içeriği varsa ekle
+    let imagesHtml = ""
+    if (topic.images && topic.images.length > 0) {
+      imagesHtml = '<div class="post-images">'
+      topic.images.forEach((image) => {
+        imagesHtml += `<img src="${image}" alt="Konu resmi" class="post-image">`
+      })
+      imagesHtml += "</div>"
+    }
+
     mainPostEl.innerHTML = `
       <div class="post-header">
         <div class="post-author">
@@ -653,12 +711,18 @@ function loadTopic() {
           <div class="author-info">
             <div class="author-name">${topic.author}</div>
             <div class="author-role">${topic.authorRole}</div>
+            ${
+              topic.authorRole === "Yönetici" || topic.authorRole === "Moderatör"
+                ? `<span class="admin-badge">${topic.authorRole}</span>`
+                : ""
+            }
             <div class="post-date">${topic.date}</div>
           </div>
         </div>
       </div>
       <div class="post-content">
         ${topic.content.replace(/\n/g, "<br>")}
+        ${imagesHtml}
       </div>
       <div class="post-footer">
         <div class="post-actions">
@@ -709,6 +773,11 @@ function loadTopic() {
             <div class="author-info">
               <div class="author-name">${reply.author}</div>
               <div class="author-role">${reply.authorRole}</div>
+              ${
+                reply.authorRole === "Yönetici" || reply.authorRole === "Moderatör"
+                  ? `<span class="admin-badge">${reply.authorRole}</span>`
+                  : ""
+              }
               <div class="post-date">${reply.date}</div>
             </div>
           </div>
@@ -834,6 +903,9 @@ function setupNewTopicPage() {
     })
   }
 
+  // Resim yükleme alanını ayarla
+  setupImageUpload()
+
   // Form gönderimini işle
   const newTopicForm = document.querySelector(".new-topic-form")
   if (newTopicForm) {
@@ -852,8 +924,12 @@ function setupNewTopicPage() {
       const topicTitle = document.getElementById("topic-title").value.trim()
       const topicContent = document.getElementById("topic-content").value.trim()
 
+      // Yüklenen resimleri al
+      const uploadedImages = getUploadedImages()
+
       console.log("Konu başlığı:", topicTitle)
       console.log("Konu içeriği:", topicContent)
+      console.log("Yüklenen resimler:", uploadedImages)
 
       if (topicTitle === "" || topicContent === "") {
         alert("Konu başlığı ve içeriği boş olamaz.")
@@ -873,6 +949,7 @@ function setupNewTopicPage() {
         views: 0,
         content: topicContent,
         likes: 0,
+        images: uploadedImages,
       }
 
       console.log("Yeni konu oluşturuldu:", newTopic)
@@ -895,6 +972,90 @@ function setupNewTopicPage() {
   } else {
     console.error("Yeni konu formu bulunamadı")
   }
+}
+
+// Resim yükleme alanını ayarla
+function setupImageUpload() {
+  const imageUploadContainer = document.getElementById("image-upload-container")
+  if (!imageUploadContainer) return
+
+  // Resim yükleme butonunu ayarla
+  const imageUploadBtn = document.getElementById("image-upload-btn")
+  const imageInput = document.getElementById("image-input")
+  const imagePreviewContainer = document.getElementById("image-preview-container")
+
+  if (imageUploadBtn && imageInput && imagePreviewContainer) {
+    imageUploadBtn.addEventListener("click", () => {
+      imageInput.click()
+    })
+
+    imageInput.addEventListener("change", (e) => {
+      const files = e.target.files
+      if (!files || files.length === 0) return
+
+      // Her dosya için önizleme oluştur
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+
+        // Sadece resim dosyalarını kabul et
+        if (!file.type.startsWith("image/")) {
+          alert("Lütfen sadece resim dosyaları yükleyin.")
+          continue
+        }
+
+        // Dosya boyutunu kontrol et (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          alert("Dosya boyutu 5MB'dan küçük olmalıdır.")
+          continue
+        }
+
+        // Dosyayı oku ve önizleme oluştur
+        const reader = new FileReader()
+        reader.onload = (event) => {
+          const imageUrl = event.target.result
+
+          // Önizleme oluştur
+          const previewItem = document.createElement("div")
+          previewItem.className = "image-preview-item"
+          previewItem.innerHTML = `
+            <img src="${imageUrl}" alt="Resim önizleme" class="image-preview">
+            <button type="button" class="remove-image-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+            <input type="hidden" name="uploaded-images[]" value="${imageUrl}">
+          `
+
+          // Silme butonunu ayarla
+          const removeBtn = previewItem.querySelector(".remove-image-btn")
+          removeBtn.addEventListener("click", () => {
+            previewItem.remove()
+          })
+
+          imagePreviewContainer.appendChild(previewItem)
+        }
+
+        reader.readAsDataURL(file)
+      }
+
+      // Input'u temizle
+      imageInput.value = ""
+    })
+  }
+}
+
+// Yüklenen resimleri al
+function getUploadedImages() {
+  const imageInputs = document.querySelectorAll('input[name="uploaded-images[]"]')
+  const images = []
+
+  imageInputs.forEach((input) => {
+    images.push(input.value)
+  })
+
+  return images
 }
 
 // Giriş formunu ayarla
@@ -937,6 +1098,14 @@ function setupLoginForm() {
 
     isLoggedIn = true
     localStorage.setItem("forumUser", JSON.stringify(currentUser))
+
+    // Kullanıcının çevrimiçi durumunu güncelle
+    const userIndex = forumData.members.findIndex((m) => m.username === user.username)
+    if (userIndex !== -1) {
+      forumData.members[userIndex].isOnline = true
+      forumData.members[userIndex].lastSeen = "Şimdi"
+      localStorage.setItem("forumData", JSON.stringify(forumData))
+    }
 
     console.log("Giriş başarılı:", currentUser)
 
@@ -982,6 +1151,10 @@ function setupRegisterForm() {
       return
     }
 
+    // Güncel tarihi al
+    const currentDate = new Date()
+    const formattedDate = `${currentDate.getDate()} ${getMonthName(currentDate.getMonth())} ${currentDate.getFullYear()}`
+
     // Yeni kullanıcı oluştur
     const newUserId = forumData.members.length > 0 ? Math.max(...forumData.members.map((m) => m.id)) + 1 : 1
 
@@ -990,9 +1163,11 @@ function setupRegisterForm() {
       username: username,
       role: "Üye",
       isOnline: true,
-      joinDate: "Bugün",
+      joinDate: formattedDate,
+      lastSeen: "Şimdi",
       posts: 0,
       topics: 0,
+      bio: "",
     }
 
     // Kullanıcıyı ekle
@@ -1004,6 +1179,25 @@ function setupRegisterForm() {
     alert("Kayıt başarılı! Giriş yapabilirsiniz.")
     window.location.href = "login.html"
   })
+}
+
+// Ay adını al
+function getMonthName(monthIndex) {
+  const months = [
+    "Ocak",
+    "Şubat",
+    "Mart",
+    "Nisan",
+    "Mayıs",
+    "Haziran",
+    "Temmuz",
+    "Ağustos",
+    "Eylül",
+    "Ekim",
+    "Kasım",
+    "Aralık",
+  ]
+  return months[monthIndex]
 }
 
 // İletişim formunu ayarla
@@ -1060,11 +1254,28 @@ function displayMembers(members) {
       <div class="member-info">
         <h3 class="member-name">${member.username}</h3>
         <div class="member-role">${member.role}</div>
+        ${
+          member.role === "Yönetici" || member.role === "Moderatör"
+            ? `<span class="admin-badge">${member.role}</span>`
+            : ""
+        }
         <div class="member-joined">Üyelik: ${member.joinDate}</div>
+        <div class="member-status">
+          ${
+            member.isOnline
+              ? '<span class="online-status">Çevrimiçi</span>'
+              : `<span class="last-seen">Son görülme: ${member.lastSeen}</span>`
+          }
+        </div>
         <div class="member-stats">
           <span class="member-stat">Konular: ${member.topics}</span>
           <span class="member-stat">Gönderiler: ${member.posts}</span>
         </div>
+        ${
+          isLoggedIn && currentUser.username !== member.username
+            ? `<a href="messages.html?to=${member.username}" class="btn btn-outline btn-sm">Mesaj Gönder</a>`
+            : ""
+        }
       </div>
     `
     membersList.appendChild(memberCard)
@@ -1207,6 +1418,7 @@ function performSearch(query, type, sort, category) {
         title: topic.title,
         content: topic.content,
         author: topic.author,
+        authorRole: topic.authorRole,
         date: topic.date,
         categoryId: topic.categoryId,
       })),
@@ -1231,6 +1443,7 @@ function performSearch(query, type, sort, category) {
           topicTitle: topic ? topic.title : "Bilinmeyen Konu",
           content: reply.content,
           author: reply.author,
+          authorRole: reply.authorRole,
           date: reply.date,
         }
       }),
@@ -1250,6 +1463,8 @@ function performSearch(query, type, sort, category) {
         username: member.username,
         role: member.role,
         joinDate: member.joinDate,
+        isOnline: member.isOnline,
+        lastSeen: member.lastSeen,
       })),
     ]
   }
@@ -1290,6 +1505,11 @@ function performSearch(query, type, sort, category) {
           </div>
           <div class="result-footer">
             <div class="result-author">${result.author}</div>
+            ${
+              result.authorRole === "Yönetici" || result.authorRole === "Moderatör"
+                ? `<span class="admin-badge">${result.authorRole}</span>`
+                : ""
+            }
             <div class="result-date">${result.date}</div>
           </div>
         `
@@ -1308,6 +1528,11 @@ function performSearch(query, type, sort, category) {
           </div>
           <div class="result-footer">
             <div class="result-author">${result.author}</div>
+            ${
+              result.authorRole === "Yönetici" || result.authorRole === "Moderatör"
+                ? `<span class="admin-badge">${result.authorRole}</span>`
+                : ""
+            }
             <div class="result-date">${result.date}</div>
           </div>
         `
@@ -1320,10 +1545,27 @@ function performSearch(query, type, sort, category) {
             <div class="result-meta">
               <span class="result-type">Kullanıcı</span>
               <span class="result-role">${result.role}</span>
+              ${
+                result.role === "Yönetici" || result.role === "Moderatör"
+                  ? `<span class="admin-badge">${result.role}</span>`
+                  : ""
+              }
             </div>
           </div>
           <div class="result-footer">
             <div class="result-joined">Üyelik: ${result.joinDate}</div>
+            <div class="result-status">
+              ${
+                result.isOnline
+                  ? '<span class="online-status">Çevrimiçi</span>'
+                  : `<span class="last-seen">Son görülme: ${result.lastSeen}</span>`
+              }
+            </div>
+            ${
+              isLoggedIn && currentUser.username !== result.username
+                ? `<a href="messages.html?to=${result.username}" class="btn btn-outline btn-sm">Mesaj Gönder</a>`
+                : ""
+            }
           </div>
         `
       }
@@ -1335,393 +1577,13 @@ function performSearch(query, type, sort, category) {
 
 // Profil sayfasını yükle
 function loadProfilePage() {
-  if (!isLoggedIn) {
-    alert("Profil sayfasına erişmek için giriş yapmalısınız.")
-    window.location.href = "login.html"
-    return
-  }
-
-  // Kullanıcı bilgilerini al
-  const profileUsername = document.getElementById("profile-username")
-  const profileRole = document.getElementById("profile-role")
-  const profileJoinedDate = document.getElementById("profile-joined-date")
-  const profileAvatarLetter = document.getElementById("profile-avatar-letter")
-
-  if (profileUsername) profileUsername.textContent = currentUser.username
-  if (profileRole) profileRole.textContent = currentUser.role || "Üye"
-  if (profileJoinedDate) profileJoinedDate.textContent = "1 Ocak 2023" // Örnek tarih
-  if (profileAvatarLetter) profileAvatarLetter.textContent = currentUser.username.charAt(0).toUpperCase()
-
-  // Profil sekmelerini aktif hale getir
-  setupProfileTabs()
-
-  // Kullanıcının konularını ve gönderilerini yükle
-  loadUserTopics(currentUser.username)
-  loadUserPosts(currentUser.username)
-
-  // İstatistikleri yükle
-  updateUserStats(currentUser.username)
-}
-
-// Profil sekmelerini ayarla
-function setupProfileTabs() {
-  const tabButtons = document.querySelectorAll(".tab-btn")
-  const tabContents = document.querySelectorAll(".tab-content")
-
-  if (!tabButtons.length || !tabContents.length) return
-
-  tabButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      // Aktif sekmeyi değiştir
-      tabButtons.forEach((btn) => {
-        btn.classList.remove("active")
-      })
-      this.classList.add("active")
-
-      // İçeriği göster/gizle
-      const tabId = this.getAttribute("data-tab")
-      tabContents.forEach((content) => {
-        if (content.id === tabId) {
-          content.classList.add("active")
-        } else {
-          content.classList.remove("active")
-        }
-      })
-    })
-  })
-
-  // İlk sekmeyi aktif yap
-  if (tabButtons[0] && tabContents[0]) {
-    tabButtons[0].classList.add("active")
-    tabContents[0].classList.add("active")
-  }
-}
-
-// Kullanıcının konularını yükle
-function loadUserTopics(username) {
-  const userTopicsContainer = document.getElementById("user-topics-container")
-  if (!userTopicsContainer) return
-
-  const userTopics = forumData.topics.filter((topic) => topic.author === username)
-
-  if (userTopics.length === 0) {
-    userTopicsContainer.innerHTML = '<p class="no-content-message">Henüz konu bulunmuyor.</p>'
-    return
-  }
-
-  userTopicsContainer.innerHTML = ""
-
-  userTopics.forEach((topic) => {
-    const category = forumData.categories.find((c) => c.id === topic.categoryId)
-    const repliesCount = forumData.replies.filter((reply) => reply.topicId === topic.id).length
-
-    const topicCard = document.createElement("div")
-    topicCard.className = "topic-card"
-    topicCard.innerHTML = `
-      <div class="topic-header">
-        <h3 class="topic-title">
-          <a href="topic.html?id=${topic.id}" class="topic-link">${topic.title}</a>
-        </h3>
-        <div class="topic-category">
-          <span>Kategori: <a href="category.html?id=${topic.categoryId}">${category ? category.title : "Bilinmeyen"}</a></span>
-        </div>
-      </div>
-      <div class="topic-footer">
-        <div class="topic-date">${topic.date}</div>
-        <div class="topic-stats">
-          <div class="stat">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            </svg>
-            <span>${repliesCount}</span>
-          </div>
-          <div class="stat">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-            <span>${topic.views}</span>
-          </div>
-        </div>
-      </div>
-    `
-    userTopicsContainer.appendChild(topicCard)
-  })
-}
-
-// Kullanıcının gönderilerini yükle
-function loadUserPosts(username) {
-  const userPostsContainer = document.getElementById("user-posts-container")
-  if (!userPostsContainer) return
-
-  const userReplies = forumData.replies.filter((reply) => reply.author === username)
-
-  if (userReplies.length === 0) {
-    userPostsContainer.innerHTML = '<p class="no-content-message">Henüz gönderi bulunmuyor.</p>'
-    return
-  }
-
-  userPostsContainer.innerHTML = ""
-
-  userReplies.forEach((reply) => {
-    const topic = forumData.topics.find((t) => t.id === reply.topicId)
-
-    const postCard = document.createElement("div")
-    postCard.className = "post-card"
-    postCard.innerHTML = `
-      <div class="post-header">
-        <div class="post-topic">
-          <a href="topic.html?id=${reply.topicId}">${topic ? topic.title : "Bilinmeyen Konu"}</a>
-        </div>
-        <div class="post-date">${reply.date}</div>
-      </div>
-      <div class="post-content">
-        ${reply.content.length > 200 ? reply.content.substring(0, 200) + "..." : reply.content}
-      </div>
-      <div class="post-footer">
-        <div class="post-actions">
-          <div class="stat">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-              <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
-            </svg>
-            <span>${reply.likes}</span>
-          </div>
-        </div>
-      </div>
-    `
-    userPostsContainer.appendChild(postCard)
-  })
-}
-
-// Kullanıcı istatistiklerini güncelle
-function updateUserStats(username) {
-  const userTopicsCount = document.getElementById("user-topics-count")
-  const userPostsCount = document.getElementById("user-posts-count")
-  const userLikesCount = document.getElementById("user-likes-count")
-
-  if (!userTopicsCount || !userPostsCount || !userLikesCount) return
-
-  // Konu sayısı
-  const topicsCount = forumData.topics.filter((topic) => topic.author === username).length
-  userTopicsCount.textContent = topicsCount
-
-  // Gönderi sayısı
-  const postsCount = forumData.replies.filter((reply) => reply.author === username).length
-  userPostsCount.textContent = postsCount
-
-  // Beğeni sayısı
-  let likesCount = 0
-
-  // Konulardaki beğeniler
-  forumData.topics.forEach((topic) => {
-    if (topic.author === username) {
-      likesCount += topic.likes
-    }
-  })
-
-  // Yanıtlardaki beğeniler
-  forumData.replies.forEach((reply) => {
-    if (reply.author === username) {
-      likesCount += reply.likes
-    }
-  })
-
-  userLikesCount.textContent = likesCount
-}
-
-// Ayarlar sayfasını ayarla
-function setupSettingsPage() {
-  if (!isLoggedIn) {
-    alert("Ayarlar sayfasına erişmek için giriş yapmalısınız.")
-    window.location.href = "login.html"
-    return
-  }
-
-  // Ayarlar sekmelerini ayarla
-  const navItems = document.querySelectorAll(".settings-nav-item")
-  const tabContents = document.querySelectorAll(".settings-tab")
-
-  navItems.forEach((item) => {
-    item.addEventListener("click", function () {
-      const tabName = this.getAttribute("data-tab")
-
-      // Aktif sekmeyi değiştir
-      navItems.forEach((navItem) => {
-        navItem.classList.remove("active")
-      })
-      this.classList.add("active")
-
-      // İçeriği göster/gizle
-      tabContents.forEach((content) => {
-        if (content.id === `${tabName}-tab`) {
-          content.classList.add("active")
-        } else {
-          content.classList.remove("active")
-        }
-      })
-    })
-  })
-
-  // Form gönderimlerini işle
-  const settingsForms = document.querySelectorAll(".settings-form")
-
-  settingsForms.forEach((form) => {
-    form.addEventListener("submit", (e) => {
-      e.preventDefault()
-
-      if (!isLoggedIn) {
-        alert("Ayarları değiştirmek için giriş yapmalısınız.")
-        return
-      }
-
-      // Form verilerini al
-      const formData = new FormData(form)
-      const formId = form.id
-
-      // Profil ayarları formu
-      if (formId === "profile-form") {
-        const bio = formData.get("bio")
-        const location = formData.get("location")
-        const website = formData.get("website")
-
-        // Kullanıcı bilgilerini güncelle
-        if (!currentUser.profile) {
-          currentUser.profile = {}
-        }
-
-        currentUser.profile.bio = bio
-        currentUser.profile.location = location
-        currentUser.profile.website = website
-
-        // LocalStorage'a kaydet
-        localStorage.setItem("forumUser", JSON.stringify(currentUser))
-
-        alert("Profil ayarları kaydedildi!")
-      }
-      // Hesap ayarları formu
-      else if (formId === "account-form") {
-        const email = formData.get("email")
-
-        // Kullanıcı bilgilerini güncelle
-        if (email) {
-          currentUser.email = email
-        }
-
-        // LocalStorage'a kaydet
-        localStorage.setItem("forumUser", JSON.stringify(currentUser))
-
-        alert("Hesap ayarları kaydedildi!")
-      }
-      // Şifre değiştirme formu
-      else if (formId === "password-form") {
-        const currentPassword = formData.get("currentPassword")
-        const newPassword = formData.get("password")
-        const confirmPassword = formData.get("confirmPassword")
-
-        if (!currentPassword || !newPassword || !confirmPassword) {
-          alert("Lütfen tüm alanları doldurun.")
-          return
-        }
-
-        if (newPassword !== confirmPassword) {
-          alert("Yeni şifreler eşleşmiyor!")
-          return
-        }
-
-        // Gerçek bir uygulamada, burada mevcut şifre doğrulaması yapılır
-        // Bu demo için, şifre değişikliğini kabul ediyoruz
-
-        alert("Şifreniz başarıyla değiştirildi!")
-        form.reset()
-      }
-      // Bildirim ayarları formu
-      else if (formId === "notifications-form") {
-        const emailNotifications = formData.get("emailNotifications") === "on"
-        const mentionNotifications = formData.get("mentionNotifications") === "on"
-        const replyNotifications = formData.get("replyNotifications") === "on"
-
-        // Kullanıcı bilgilerini güncelle
-        if (!currentUser.preferences) {
-          currentUser.preferences = {}
-        }
-
-        currentUser.preferences.emailNotifications = emailNotifications
-        currentUser.preferences.mentionNotifications = mentionNotifications
-        currentUser.preferences.replyNotifications = replyNotifications
-
-        // LocalStorage'a kaydet
-        localStorage.setItem("forumUser", JSON.stringify(currentUser))
-
-        alert("Bildirim ayarları kaydedildi!")
-      }
-      // Gizlilik ayarları formu
-      else if (formId === "privacy-form") {
-        const profileVisibility = formData.get("profileVisibility")
-        const onlineStatus = formData.get("onlineStatus") === "on"
-
-        // Kullanıcı bilgilerini güncelle
-        if (!currentUser.privacy) {
-          currentUser.privacy = {}
-        }
-
-        currentUser.privacy.profileVisibility = profileVisibility
-        currentUser.privacy.showOnlineStatus = onlineStatus
-
-        // LocalStorage'a kaydet
-        localStorage.setItem("forumUser", JSON.stringify(currentUser))
-
-        alert("Gizlilik ayarları kaydedildi!")
-      }
-    })
-  })
-}
-
-// Form gönderimlerini işle
-function setupFormSubmissions() {
-  // Bu fonksiyon, sayfaya özgü form işlemleri dışındaki genel form işlemlerini ele alabilir
-}
-
-// Etkileşimli butonları ayarla
-function setupActionButtons() {
-  // Beğeni butonları
-  const likeButtons = document.querySelectorAll(".like-btn")
-  likeButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      if (!isLoggedIn) {
-        alert("Beğenmek için giriş yapmalısınız.")
-        return
-      }
-
-      const likesSpan = this.querySelector("span")
-      let likes = Number.parseInt(this.getAttribute("data-likes"))
-
-      if (this.classList.contains("active")) {
-        // Beğeniyi kaldır
-        likes--
-        this.classList.remove("active")
-      } else {
-        // Beğen
-        likes++
-        this.classList.add("active")
-      }
-
-      this.setAttribute("data-likes", likes)
-      likesSpan.textContent = likes
-
-      // Gerçek bir uygulamada, burada beğeni veritabanına kaydedilir
-    })
-  })
-}
-
-// Mesajlar sayfasını ayarla
-function setupMessagesPage() {
-  if (!isLoggedIn) {
-    alert("Mesajlar sayfasına erişmek için giriş yapmalısınız.")
-    window.location.href = "login.html"
-    return
-  }
-
-  // Mesajlar sayfası için gerekli işlemler burada yapılabilir
-  // Bu demo için, mesajlar özelliği tam olarak uygulanmamıştır
-}
+  // URL parametrelerini kontrol et
+  const urlParams = new URLSearchParams(window.location.search);
+  const usernameParam = urlParams.get("username");
+  
+  // Görüntülenecek kullanıcıyı belirle
+  let profileUser;
+  
+  if (usernameParam) {
+// URL'
 
