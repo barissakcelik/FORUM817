@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FORUM817 - İletişim</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <img src="https://placehold.co/200x50/f5a623/ffffff?text=FORUM817" alt="FORUM817 Logo" class="logo-image">
+        </a>
+        <div class="nav-links">
+          <a href="index.html" class="nav-link">Ana Sayfa</a>
+          <a href="search.html" class="nav-link">Ara</a>
+          <a href="members.html" class="nav-link">Üyeler</a>
+          <a href="rules.html" class="nav-link">Kurallar</a>
+        </div>
+        <div class="auth-buttons" id="auth-buttons">
+          <a href="login.html" class="btn btn-outline">Giriş Yap</a>
+          <a href="register.html" class="btn btn-primary">Kayıt Ol</a>
+        </div>
+        <div class="user-profile" id="user-profile" style="display: none;">
+          <div class="user-dropdown">
+            <button class="user-dropdown-btn" id="user-dropdown-toggle">
+              <div class="avatar user-avatar">U</div>
+              <span class="username" id="current-username">Kullanıcı</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="user-dropdown-content" id="user-dropdown-menu">
+              <a href="profile.html" class="dropdown-item">Profil</a>
+              <a href="settings.html" class="dropdown-item">Ayarlar</a>
+              <a href="messages.html" class="dropdown-item">Mesajlar</a>
+              <div id="admin-links" style="display: none;">
+                <div class="dropdown-divider"></div>
+                <a href="admin/index.html" class="dropdown-item">Admin Panel</a>
+              </div>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item" id="logout-btn">Çıkış Yap</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1 class="page-title">İletişim</h1>
+    
+    <div class="content-card">
+      <div class="contact-section">
+        <h2 class="section-title">Bizimle İletişime Geçin</h2>
+        <p>Sorularınız, önerileriniz veya geri bildirimleriniz için aşağıdaki iletişim formunu kullanabilir veya doğrudan e-posta adresimize yazabilirsiniz.</p>
+        
+        <div class="contact-info">
+          <div class="contact-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <span>iletisim@forum817.com</span>
+          </div>
+          <div class="contact-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <span>İstanbul, Türkiye</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form-section">
+        <h2 class="section-title">İletişim Formu</h2>
+        <form id="contact-form" class="contact-form">
+          <div class="form-group">
+            <label for="name" class="form-label">Adınız Soyadınız</label>
+            <input type="text" id="name" name="name" class="form-input" placeholder="Adınız ve soyadınız" required>
+          </div>
+          <div class="form-group">
+            <label for="email" class="form-label">E-posta Adresiniz</label>
+            <input type="email" id="email" name="email" class="form-input" placeholder="E-posta adresiniz" required>
+          </div>
+          <div class="form-group">
+            <label for="subject" class="form-label">Konu</label>
+            <input type="text" id="subject" name="subject" class="form-input" placeholder="Mesajınızın konusu" required>
+          </div>
+          <div class="form-group">
+            <label for="message" class="form-label">Mesajınız</label>
+            <textarea id="message" name="message" class="form-textarea" placeholder="Mesajınızı buraya yazın..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Mesajı Gönder</button>
+        </form>
+      </div>
+
+      <div class="faq-section">
+        <h2 class="section-title">Sık Sorulan Sorular</h2>
+        
+        <div class="faq-item">
+          <h3 class="faq-question">Üyelik ücreti var mı?</h3>
+          <p class="faq-answer">Hayır, FORUM817'ye üyelik tamamen ücretsizdir.</p>
+        </div>
+        
+        <div class="faq-item">
+          <h3 class="faq-question">Şifremi unuttum, ne yapmalıyım?</h3>
+          <p class="faq-answer">Giriş sayfasında bulunan "Şifremi unuttum" bağlantısına tıklayarak şifre sıfırlama işlemi başlatabilirsiniz.</p>
+        </div>
+        
+        <div class="faq-item">
+          <h3 class="faq-question">Hesabımı nasıl silebilirim?</h3>
+          <p class="faq-answer">Hesabınızı silmek için Ayarlar sayfasındaki "Hesap" sekmesine giderek "Hesabımı Sil" seçeneğini kullanabilirsiniz.</p>
+        </div>
+        
+        <div class="faq-item">
+          <h3 class="faq-question">Moderatör olmak için ne yapmalıyım?</h3>
+          <p class="faq-answer">Moderatör başvuruları belirli dönemlerde açılmaktadır. Duyurular kategorisini takip ederek başvuru dönemlerinden haberdar olabilirsiniz.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-copyright">
+          <p>&copy; <span id="current-year">2023</span> FORUM817. Tüm hakları saklıdır.</p>
+        </div>
+        <div class="footer-links">
+          <a href="about.html" class="footer-link">Hakkımızda</a>
+          <a href="contact.html" class="footer-link">İletişim</a>
+          <a href="privacy.html" class="footer-link">Gizlilik</a>
+          <a href="terms.html" class="footer-link">Kullanım Şartları</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="forum-data.js"></script>
+  <script src="user-interface.js"></script>
+</body>
+</html>
+

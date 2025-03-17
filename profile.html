@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FORUM817 - Profil</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <img src="https://placehold.co/200x50/f5a623/ffffff?text=FORUM817" alt="FORUM817 Logo" class="logo-image">
+        </a>
+        <div class="nav-links">
+          <a href="index.html" class="nav-link">Ana Sayfa</a>
+          <a href="search.html" class="nav-link">Ara</a>
+          <a href="members.html" class="nav-link">Üyeler</a>
+          <a href="rules.html" class="nav-link">Kurallar</a>
+        </div>
+        <div class="auth-buttons" id="auth-buttons">
+          <a href="login.html" class="btn btn-outline">Giriş Yap</a>
+          <a href="register.html" class="btn btn-primary">Kayıt Ol</a>
+        </div>
+        <div class="user-profile" id="user-profile" style="display: none;">
+          <div class="user-dropdown">
+            <button class="user-dropdown-btn" id="user-dropdown-toggle">
+              <div class="avatar user-avatar">U</div>
+              <span class="username" id="current-username">Kullanıcı</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="user-dropdown-content" id="user-dropdown-menu">
+              <a href="profile.html" class="dropdown-item">Profil</a>
+              <a href="settings.html" class="dropdown-item">Ayarlar</a>
+              <a href="messages.html" class="dropdown-item">Mesajlar</a>
+              <div id="admin-links" style="display: none;">
+                <div class="dropdown-divider"></div>
+                <a href="admin/index.html" class="dropdown-item">Admin Panel</a>
+              </div>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item" id="logout-btn">Çıkış Yap</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="profile-header">
+      <div class="avatar large-avatar" id="profile-avatar-letter">U</div>
+      <div class="profile-info">
+        <h1 class="page-title" id="profile-username">Kullanıcı</h1>
+        <div class="profile-role" id="profile-role">Üye</div>
+        <div class="profile-joined">Üyelik: <span id="profile-joined-date">1 Ocak 2023</span></div>
+      </div>
+    </div>
+
+    <div class="profile-tabs">
+      <button class="tab-btn active" data-tab="posts">Gönderiler</button>
+      <button class="tab-btn" data-tab="topics">Konular</button>
+      <button class="tab-btn" data-tab="about">Hakkında</button>
+    </div>
+
+    <div id="posts" class="tab-content active">
+      <div class="posts-section" id="user-posts-container">
+        <!-- Kullan��cının gönderileri JavaScript ile yüklenecek -->
+        <p class="no-content-message">Henüz gönderi bulunmuyor.</p>
+      </div>
+    </div>
+
+    <div id="topics" class="tab-content">
+      <div class="topics-section" id="user-topics-container">
+        <!-- Kullanıcının konuları JavaScript ile yüklenecek -->
+        <p class="no-content-message">Henüz konu bulunmuyor.</p>
+      </div>
+    </div>
+
+    <div id="about" class="tab-content">
+      <div class="about-section">
+        <h2 class="about-title">Hakkında</h2>
+        <p id="user-bio">Kullanıcı henüz bir biyografi eklememiş.</p>
+      </div>
+
+      <div class="about-section">
+        <h2 class="about-title">İstatistikler</h2>
+        <ul class="stats-list">
+          <li class="stat-item">
+            <span class="stat-label">Konular</span>
+            <span class="stat-value" id="user-topics-count">0</span>
+          </li>
+          <li class="stat-item">
+            <span class="stat-label">Gönderiler</span>
+            <span class="stat-value" id="user-posts-count">0</span>
+          </li>
+          <li class="stat-item">
+            <span class="stat-label">Beğeniler</span>
+            <span class="stat-value" id="user-likes-count">0</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-copyright">
+          <p>&copy; <span id="current-year">2023</span> FORUM817. Tüm hakları saklıdır.</p>
+        </div>
+        <div class="footer-links">
+          <a href="about.html" class="footer-link">Hakkımızda</a>
+          <a href="contact.html" class="footer-link">İletişim</a>
+          <a href="privacy.html" class="footer-link">Gizlilik</a>
+          <a href="terms.html" class="footer-link">Kullanım Şartları</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="forum-data.js"></script>
+  <script src="user-interface.js"></script>
+</body>
+</html>
+

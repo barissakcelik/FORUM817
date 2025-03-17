@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FORUM817 - Kayıt Ol</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <img src="https://placehold.co/200x50/f5a623/ffffff?text=FORUM817" alt="FORUM817 Logo" class="logo-image">
+        </a>
+        <div class="nav-links">
+          <a href="index.html" class="nav-link">Ana Sayfa</a>
+          <a href="search.html" class="nav-link">Ara</a>
+          <a href="members.html" class="nav-link">Üyeler</a>
+          <a href="rules.html" class="nav-link">Kurallar</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="auth-container">
+      <div class="auth-card">
+        <h1 class="auth-title">Kayıt Ol</h1>
+        <form class="auth-form">
+          <div class="form-group">
+            <label for="username" class="form-label">Kullanıcı Adı</label>
+            <input type="text" id="username" class="form-input" placeholder="Kullanıcı adınızı girin" required>
+          </div>
+          <div class="form-group">
+            <label for="email" class="form-label">E-posta</label>
+            <input type="email" id="email" class="form-input" placeholder="E-posta adresinizi girin" required>
+          </div>
+          <div class="form-group">
+            <label for="password" class="form-label">Şifre</label>
+            <input type="password" id="password" class="form-input" placeholder="Şifrenizi girin" required>
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword" class="form-label">Şifre Tekrar</label>
+            <input type="password" id="confirmPassword" class="form-input" placeholder="Şifrenizi tekrar girin" required>
+          </div>
+          <div class="form-group">
+            <div class="checkbox-group">
+              <input type="checkbox" id="terms" class="checkbox" required>
+              <label for="terms" class="checkbox-label">
+                <a href="terms.html" target="_blank">Kullanım şartlarını</a> ve <a href="privacy.html" target="_blank">gizlilik politikasını</a> kabul ediyorum.
+              </label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Kayıt Ol</button>
+        </form>
+        <div class="auth-links">
+          <span>Zaten hesabınız var mı?</span>
+          <a href="login.html" class="auth-link">Giriş Yap</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-copyright">
+          <p>&copy; <span id="current-year">2023</span> FORUM817. Tüm hakları saklıdır.</p>
+        </div>
+        <div class="footer-links">
+          <a href="about.html" class="footer-link">Hakkımızda</a>
+          <a href="contact.html" class="footer-link">İletişim</a>
+          <a href="privacy.html" class="footer-link">Gizlilik</a>
+          <a href="terms.html" class="footer-link">Kullanım Şartları</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="forum-data.js"></script>
+  <script src="user-interface.js"></script>
+</body>
+</html>
+

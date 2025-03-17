@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FORUM817 - Ayarlar</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <img src="https://placehold.co/200x50/f5a623/ffffff?text=FORUM817" alt="FORUM817 Logo" class="logo-image">
+        </a>
+        <div class="nav-links">
+          <a href="index.html" class="nav-link">Ana Sayfa</a>
+          <a href="search.html" class="nav-link">Ara</a>
+          <a href="members.html" class="nav-link">Üyeler</a>
+          <a href="rules.html" class="nav-link">Kurallar</a>
+        </div>
+        <div class="auth-buttons" id="auth-buttons">
+          <a href="login.html" class="btn btn-outline">Giriş Yap</a>
+          <a href="register.html" class="btn btn-primary">Kayıt Ol</a>
+        </div>
+        <div class="user-profile" id="user-profile" style="display: none;">
+          <div class="user-dropdown">
+            <button class="user-dropdown-btn" id="user-dropdown-toggle">
+              <div class="avatar user-avatar">U</div>
+              <span class="username" id="current-username">Kullanıcı</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="user-dropdown-content" id="user-dropdown-menu">
+              <a href="profile.html" class="dropdown-item">Profil</a>
+              <a href="settings.html" class="dropdown-item">Ayarlar</a>
+              <a href="messages.html" class="dropdown-item">Mesajlar</a>
+              <div id="admin-links" style="display: none;">
+                <div class="dropdown-divider"></div>
+                <a href="admin/index.html" class="dropdown-item">Admin Panel</a>
+              </div>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item" id="logout-btn">Çıkış Yap</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1 class="page-title">Ayarlar</h1>
+
+    <div class="settings-container">
+      <div class="settings-sidebar">
+        <div class="settings-nav">
+          <button class="settings-nav-item active" data-tab="profile">Profil Bilgileri</button>
+          <button class="settings-nav-item" data-tab="account">Hesap Ayarları</button>
+          <button class="settings-nav-item" data-tab="password">Şifre Değiştir</button>
+          <button class="settings-nav-item" data-tab="notifications">Bildirim Ayarları</button>
+          <button class="settings-nav-item" data-tab="privacy">Gizlilik</button>
+        </div>
+      </div>
+
+      <div class="settings-content">
+        <div id="profile-tab" class="settings-tab active">
+          <h2 class="settings-title">Profil Bilgileri</h2>
+          <form id="profile-form" class="settings-form">
+            <div class="form-group">
+              <label for="bio" class="form-label">Hakkımda</label>
+              <textarea id="bio" name="bio" class="form-textarea" placeholder="Kendiniz hakkında bilgi verin..."></textarea>
+            </div>
+            <div class="form-group">
+              <label for="location" class="form-label">Konum</label>
+              <input type="text" id="location" name="location" class="form-input" placeholder="Konumunuz">
+            </div>
+            <div class="form-group">
+              <label for="website" class="form-label">Web Sitesi</label>
+              <input type="url" id="website" name="website" class="form-input" placeholder="Web siteniz">
+            </div>
+            <button type="submit" class="btn btn-primary">Değişiklikleri Kaydet</button>
+          </form>
+        </div>
+
+        <div id="account-tab" class="settings-tab">
+          <h2 class="settings-title">Hesap Ayarları</h2>
+          <form id="account-form" class="settings-form">
+            <div class="form-group">
+              <label for="email" class="form-label">E-posta</label>
+              <input type="email" id="email" name="email" class="form-input" placeholder="E-posta adresiniz">
+            </div>
+            <div class="form-group">
+              <label for="username" class="form-label">Kullanıcı Adı</label>
+              <input type="text" id="username" name="username" class="form-input" placeholder="Kullanıcı adınız" disabled>
+              <p class="form-help">Kullanıcı adı değiştirilemez.</p>
+            </div>
+            <button type="submit" class="btn btn-primary">Değişiklikleri Kaydet</button>
+          </form>
+        </div>
+
+        <div id="password-tab" class="settings-tab">
+          <h2 class="settings-title">Şifre Değiştir</h2>
+          <form id="password-form" class="settings-form">
+            <div class="form-group">
+              <label for="current-password" class="form-label">Mevcut Şifre</label>
+              <input type="password" id="current-password" name="currentPassword" class="form-input" placeholder="Mevcut şifreniz">
+            </div>
+            <div class="form-group">
+              <label for="new-password" class="form-label">Yeni Şifre</label>
+              <input type="password" id="new-password" name="password" class="form-input" placeholder="Yeni şifreniz">
+            </div>
+            <div class="form-group">
+              <label for="confirm-password" class="form-label">Şifre Tekrar</label>
+              <input type="password" id="confirm-password" name="confirmPassword" class="form-input" placeholder="Yeni şifrenizi tekrar girin">
+            </div>
+            <button type="submit" class="btn btn-primary">Şifreyi Değiştir</button>
+          </form>
+        </div>
+
+        <div id="notifications-tab" class="settings-tab">
+          <h2 class="settings-title">Bildirim Ayarları</h2>
+          <form id="notifications-form" class="settings-form">
+            <div class="form-group">
+              <div class="checkbox-group">
+                <input type="checkbox" id="email-notifications" name="emailNotifications" class="checkbox">
+                <label for="email-notifications" class="checkbox-label">E-posta bildirimleri</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="checkbox-group">
+                <input type="checkbox" id="mention-notifications" name="mentionNotifications" class="checkbox">
+                <label for="mention-notifications" class="checkbox-label">Bahsedilme bildirimleri</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="checkbox-group">
+                <input type="checkbox" id="reply-notifications" name="replyNotifications" class="checkbox">
+                <label for="reply-notifications" class="checkbox-label">Yanıt bildirimleri</label>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Değişiklikleri Kaydet</button>
+          </form>
+        </div>
+
+        <div id="privacy-tab" class="settings-tab">
+          <h2 class="settings-title">Gizlilik</h2>
+          <form id="privacy-form" class="settings-form">
+            <div class="form-group">
+              <label class="form-label">Profil Görünürlüğü</label>
+              <div class="radio-group">
+                <div class="radio-item">
+                  <input type="radio" id="profile-public" name="profileVisibility" value="public" class="radio" checked>
+                  <label for="profile-public" class="radio-label">Herkese açık</label>
+                </div>
+                <div class="radio-item">
+                  <input type="radio" id="profile-members" name="profileVisibility" value="members" class="radio">
+                  <label for="profile-members" class="radio-label">Sadece üyeler</label>
+                </div>
+                <div class="radio-item">
+                  <input type="radio" id="profile-private" name="profileVisibility" value="private" class="radio">
+                  <label for="profile-private" class="radio-label">Gizli</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="checkbox-group">
+                <input type="checkbox" id="online-status" name="onlineStatus" class="checkbox" checked>
+                <label for="online-status" class="checkbox-label">Çevrimiçi durumumu göster</label>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Değişiklikleri Kaydet</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-copyright">
+          <p>&copy; <span id="current-year">2023</span> FORUM817. Tüm hakları saklıdır.</p>
+        </div>
+        <div class="footer-links">
+          <a href="about.html" class="footer-link">Hakkımızda</a>
+          <a href="contact.html" class="footer-link">İletişim</a>
+          <a href="privacy.html" class="footer-link">Gizlilik</a>
+          <a href="terms.html" class="footer-link">Kullanım Şartları</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="forum-data.js"></script>
+  <script src="user-interface.js"></script>
+</body>
+</html>
+

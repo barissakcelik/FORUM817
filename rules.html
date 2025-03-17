@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FORUM817 - Kurallar</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <img src="https://placehold.co/200x50/f5a623/ffffff?text=FORUM817" alt="FORUM817 Logo" class="logo-image">
+        </a>
+        <div class="nav-links">
+          <a href="index.html" class="nav-link">Ana Sayfa</a>
+          <a href="search.html" class="nav-link">Ara</a>
+          <a href="members.html" class="nav-link">Üyeler</a>
+          <a href="rules.html" class="nav-link active">Kurallar</a>
+        </div>
+        <div class="auth-buttons" id="auth-buttons">
+          <a href="login.html" class="btn btn-outline">Giriş Yap</a>
+          <a href="register.html" class="btn btn-primary">Kayıt Ol</a>
+        </div>
+        <div class="user-profile" id="user-profile" style="display: none;">
+          <div class="user-dropdown">
+            <button class="user-dropdown-btn" id="user-dropdown-toggle">
+              <div class="avatar user-avatar">U</div>
+              <span class="username" id="current-username">Kullanıcı</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="user-dropdown-content" id="user-dropdown-menu">
+              <a href="profile.html" class="dropdown-item">Profil</a>
+              <a href="settings.html" class="dropdown-item">Ayarlar</a>
+              <a href="messages.html" class="dropdown-item">Mesajlar</a>
+              <div id="admin-links" style="display: none;">
+                <div class="dropdown-divider"></div>
+                <a href="admin/index.html" class="dropdown-item">Admin Panel</a>
+              </div>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item" id="logout-btn">Çıkış Yap</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1 class="page-title">Forum Kuralları</h1>
+    
+    <div class="content-card">
+      <div class="rules-section">
+        <p class="rules-intro">FORUM817'de keyifli ve saygılı bir ortam oluşturmak için aşağıdaki kurallara uymanızı rica ederiz. Bu kurallar, tüm üyelerimizin güvenli ve verimli bir şekilde etkileşimde bulunmasını sağlamak için oluşturulmuştur.</p>
+        
+        <div class="rule-item">
+          <h2 class="rule-title">1. Genel Davranış Kuralları</h2>
+          <ul class="rule-list">
+            <li  Genel Davranış Kuralları</h2>
+          <ul class="rule-list">
+            <li>Tüm üyelere saygılı ve nazik davranın. Hakaret, aşağılama veya kişisel saldırılar kesinlikle yasaktır.</li>
+            <li>Diğer üyelerin görüşlerine saygı gösterin. Farklı fikirler olabilir ve bu fikirlere saygı duymak önemlidir.</li>
+            <li>Provokatif veya tartışma çıkarmaya yönelik paylaşımlardan kaçının.</li>
+            <li>Forumda küfür, argo ve kaba dil kullanımından kaçının.</li>
+            <li>Diğer üyelerin kişisel bilgilerini izinsiz paylaşmayın (doxxing).</li>
+          </ul>
+        </div>
+        
+        <div class="rule-item">
+          <h2 class="rule-title">2. İçerik Kuralları</h2>
+          <ul class="rule-list">
+            <li>Yasadışı içerik paylaşımı kesinlikle yasaktır.</li>
+            <li>Telif hakkı ihlali içeren materyalleri paylaşmayın.</li>
+            <li>Müstehcen, pornografik veya +18 içerik paylaşımı yasaktır.</li>
+            <li>Şiddet içeren veya şiddeti teşvik eden içerikler paylaşmayın.</li>
+            <li>Nefret söylemi, ırkçılık, cinsiyetçilik veya ayrımcılık içeren paylaşımlar yasaktır.</li>
+            <li>Spam veya reklam amaçlı paylaşımlar yapmayın.</li>
+          </ul>
+        </div>
+        
+        <div class="rule-item">
+          <h2 class="rule-title">3. Konu ve Mesaj Kuralları</h2>
+          <ul class="rule-list">
+            <li>Yeni bir konu açmadan önce, benzer bir konunun olup olmadığını kontrol edin.</li>
+            <li>Konuları uygun kategorilerde açın.</li>
+            <li>Konu başlıkları açıklayıcı ve konuyla ilgili olmalıdır.</li>
+            <li>Tüm büyük harflerle yazmaktan kaçının (CAPS LOCK).</li>
+            <li>Aynı mesajı birden fazla yere göndermekten (cross-posting) kaçının.</li>
+            <li>Konudan sapan (off-topic) mesajlar yazmayın.</li>
+          </ul>
+        </div>
+        
+        <div class="rule-item">
+          <h2 class="rule-title">4. Hesap ve Profil Kuralları</h2>
+          <ul class="rule-list">
+            <li>Birden fazla hesap açmayın (multi-accounting).</li>
+            <li>Uygunsuz kullanıcı adları seçmeyin.</li>
+            <li>Profil resmi ve imza olarak uygunsuz içerik kullanmayın.</li>
+            <li>Başka bir kullanıcının kimliğine bürünmeyin.</li>
+          </ul>
+        </div>
+        
+        <div class="rule-item">
+          <h2 class="rule-title">5. Moderasyon ve Yaptırımlar</h2>
+          <ul class="rule-list">
+            <li>Moderatörlerin kararlarına saygı gösterin.</li>
+            <li>Kurallara uymayan içerikler moderatörler tarafından düzenlenebilir veya silinebilir.</li>
+            <li>Kural ihlalleri durumunda uyarı, geçici uzaklaştırma veya kalıcı uzaklaştırma gibi yaptırımlar uygulanabilir.</li>
+            <li>Moderasyon kararlarına itirazlarınızı özel mesaj yoluyla iletebilirsiniz.</li>
+          </ul>
+        </div>
+        
+        <div class="rules-note">
+          <p>Bu kurallar, forum deneyimini herkes için daha iyi hale getirmek amacıyla oluşturulmuştur. Kurallara uyarak, FORUM817 topluluğuna değerli katkılarda bulunabilirsiniz.</p>
+          <p>Kurallar zaman zaman güncellenebilir. Düzenli olarak kontrol etmeniz önerilir.</p>
+          <p>Sorularınız veya endişeleriniz varsa, lütfen forum moderatörleriyle iletişime geçmekten çekinmeyin.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-copyright">
+          <p>&copy; <span id="current-year">2023</span> FORUM817. Tüm hakları saklıdır.</p>
+        </div>
+        <div class="footer-links">
+          <a href="about.html" class="footer-link">Hakkımızda</a>
+          <a href="contact.html" class="footer-link">İletişim</a>
+          <a href="privacy.html" class="footer-link">Gizlilik</a>
+          <a href="terms.html" class="footer-link">Kullanım Şartları</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="forum-data.js"></script>
+  <script src="user-interface.js"></script>
+</body>
+</html>
+
